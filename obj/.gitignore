@@ -1,0 +1,10 @@
+.vs
+*.dll
+*.pdb
+*.cache
+bin
+*/bin
+**/bin
+**/debug
+**/obj
+*.user
