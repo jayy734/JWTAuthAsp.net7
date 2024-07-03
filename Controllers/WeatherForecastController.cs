@@ -1,3 +1,5 @@
+using JWTAuthAspNet7WebApi.Core.OtherObject;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JWTAuthAspNet7WebApi.Controllers
@@ -21,5 +23,34 @@ namespace JWTAuthAspNet7WebApi.Controllers
         {
             return Ok(Summaries);
         }
+
+
+        [HttpGet]
+        [Route("GetUserRole")]
+        [Authorize(Roles = StaticUserRoles.USER)]
+        public IActionResult GetUserRole()
+        {
+            return Ok(Summaries);
+        }
+
+
+        [HttpGet]
+        [Route("GetAdmminRole")]
+        [Authorize(Roles = StaticUserRoles.ADMIN)]
+        public IActionResult GetAdminRole()
+        {
+            return Ok(Summaries);
+        }
+
+
+        [HttpGet]
+        [Route("GetOwnerRole")]
+        [Authorize(Roles = StaticUserRoles.OWNER)]
+        public IActionResult GetOwnerRole()
+        {
+            return Ok(Summaries);
+        }
+
+
     }
 }
