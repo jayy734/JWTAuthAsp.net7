@@ -1,4 +1,5 @@
 ﻿using JWTAuthAspNet7WebApi.Core.Dtos;
+using JWTAuthAspNet7WebApi.Core.Entities;
 using JWTAuthAspNet7WebApi.Core.OtherObject;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -15,12 +16,12 @@ namespace JWTAuthAspNet7WebApi.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleMaganger;
         private readonly IConfiguration _configuration;
         
 
-        public AuthController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _roleMaganger = roleManager;
@@ -61,8 +62,10 @@ namespace JWTAuthAspNet7WebApi.Controllers
                 return BadRequest("UserName already Exits!");
             }
 
-            IdentityUser newUser = new IdentityUser()
+            ApplicationUser newUser = new ApplicationUser()
             {
+                FirstName = registerDto.FirstName,
+                LastName = registerDto.LastName,
                 Email = registerDto.Email,
                 UserName = registerDto.UserName,
                 SecurityStamp = Guid.NewGuid().ToString(),
@@ -107,6 +110,8 @@ namespace JWTAuthAspNet7WebApi.Controllers
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim("JWTID", Guid.NewGuid().ToString()),
+                new Claim("FirstName", user.FirstName),
+                new Claim("LastName", user.LastName),
             };
 
             foreach(var userRole in userRoles)
