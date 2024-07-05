@@ -1,5 +1,7 @@
 using JWTAuthAspNet7WebApi.Core.DbContext;
 using JWTAuthAspNet7WebApi.Core.Entities;
+using JWTAuthAspNet7WebApi.Core.Interfaces;
+using JWTAuthAspNet7WebApi.Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -61,6 +63,10 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
         };
     });
+
+// Inject app dependencies (DI)
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 // pipeline
