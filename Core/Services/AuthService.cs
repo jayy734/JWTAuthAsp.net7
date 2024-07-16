@@ -25,8 +25,8 @@ namespace JWTAuthAspNet7WebApi.Core.Services
         }
         public async Task<AuthServiceResponseDto> LoginAsync(LoginDto logindto)
         {
-            var user = await _userManager.FindByNameAsync(logindto.UserName);
-            if (user is null)
+            var user = await _userManager.FindByEmailAsync(logindto.Email);
+            if (user is null || user.isDeleted == true)
                 return new AuthServiceResponseDto()
                 {
                     IsSucceed = false,
@@ -46,6 +46,7 @@ namespace JWTAuthAspNet7WebApi.Core.Services
 
             var authClaims = new List<Claim>
             {
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim("JWTID", Guid.NewGuid().ToString()),
@@ -88,7 +89,7 @@ namespace JWTAuthAspNet7WebApi.Core.Services
             };
         }
 
-        public async Task<AuthServiceResponseDto> MakeOwnerAsync(UpdatePermissionDto updatePermissionDto)
+        public async Task<AuthServiceResponseDto> MakeHeadmanAsync(UpdatePermissionDto updatePermissionDto)
         {
             var user = await _userManager.FindByNameAsync(updatePermissionDto.UserName);
 
@@ -99,12 +100,32 @@ namespace JWTAuthAspNet7WebApi.Core.Services
                     Message = "Invalid User Name"
                 };
 
-            await _userManager.AddToRoleAsync(user, StaticUserRoles.OWNER);
+            await _userManager.AddToRoleAsync(user, StaticUserRoles.HEADMAN);
 
             return new AuthServiceResponseDto()
             {
                 IsSucceed = true,
-                Message = "User is now an Owner",
+                Message = "User is now an headman",
+            };
+        }
+
+        public async Task<AuthServiceResponseDto> MakeVitimAsync(UpdatePermissionDto updatePermissionDto)
+        {
+            var user = await _userManager.FindByNameAsync(updatePermissionDto.UserName);
+
+            if (user is null)
+                return new AuthServiceResponseDto()
+                {
+                    IsSucceed = false,
+                    Message = "Invalid User Name"
+                };
+
+            await _userManager.AddToRoleAsync(user, StaticUserRoles.VITIM);
+
+            return new AuthServiceResponseDto()
+            {
+                IsSucceed = true,
+                Message = "User is now a Vitim.",
             };
         }
 
@@ -128,6 +149,7 @@ namespace JWTAuthAspNet7WebApi.Core.Services
                 LastName = registerDto.LastName,
                 Email = registerDto.Email,
                 UserName = registerDto.UserName,
+                PasswordHash = registerDto.Password,
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 
@@ -147,7 +169,7 @@ namespace JWTAuthAspNet7WebApi.Core.Services
                 };
 
             }
-            //Add a default user role to all isers
+            //Add a default user role to all users
             await _userManager.AddToRoleAsync(newUser, StaticUserRoles.USER);
 
             return new AuthServiceResponseDto()
@@ -159,11 +181,13 @@ namespace JWTAuthAspNet7WebApi.Core.Services
 
         public async Task<AuthServiceResponseDto> SeedRolesAsync()
         {
-            bool isOwnerRoleExists = await _roleMaganger.RoleExistsAsync(StaticUserRoles.OWNER);
+            bool isHeadManRoleExists = await _roleMaganger.RoleExistsAsync(StaticUserRoles.HEADMAN);
             bool isUserRoleExits = await _roleMaganger.RoleExistsAsync(StaticUserRoles.USER);
             bool isAdminRoleExits = await _roleMaganger.RoleExistsAsync(StaticUserRoles.ADMIN);
+            bool isVitmRoleExits = await _roleMaganger.RoleExistsAsync(StaticUserRoles.VITIM);
 
-            if (isOwnerRoleExists && isUserRoleExits && isAdminRoleExits)
+
+            if (isHeadManRoleExists && isUserRoleExits && isAdminRoleExits && isVitmRoleExits)
             {
                 return new AuthServiceResponseDto()
                 {
@@ -172,8 +196,9 @@ namespace JWTAuthAspNet7WebApi.Core.Services
                 };
             }
             await _roleMaganger.CreateAsync(new IdentityRole(StaticUserRoles.USER));
-            await _roleMaganger.CreateAsync(new IdentityRole(StaticUserRoles.OWNER));
+            await _roleMaganger.CreateAsync(new IdentityRole(StaticUserRoles.HEADMAN));
             await _roleMaganger.CreateAsync(new IdentityRole(StaticUserRoles.ADMIN));
+            await _roleMaganger.CreateAsync(new IdentityRole(StaticUserRoles.VITIM));
 
             return new AuthServiceResponseDto()
             {
@@ -198,5 +223,55 @@ namespace JWTAuthAspNet7WebApi.Core.Services
 
             return token;
         }
+
+        //public async Task<AuthServiceResponseDto> UpdateAsync(RegisterDto registerDto)
+        //{
+
+        //    var isExitUser = await _userManager.FindByNameAsync(registerDto.UserName);
+
+        //    if (isExitUser == null)
+        //    {
+        //        return new AuthServiceResponseDto()
+        //        {
+        //            IsSucceed = false,
+        //            Message = "UserName Does not exist!"
+        //        };
+        //    }
+
+        //    ApplicationUser newUser = new ApplicationUser()
+        //    {
+        //        FirstName = registerDto.FirstName,
+        //        LastName = registerDto.LastName,
+        //        Email = registerDto.Email,
+        //        UserName = registerDto.UserName,               
+        //        SecurityStamp = Guid.NewGuid().ToString(),
+        //    };
+
+        //    var updateResult = await _userManager.UpdateAsync(newUser);
+
+        //    if (!updateResult.Succeeded)
+        //    {
+        //        var errorString = "User Creation Failed Because: ";
+        //        foreach (var error in updateResult.Errors)
+        //        {
+        //            errorString += " # " + error.Description;
+        //        }
+        //        return new AuthServiceResponseDto()
+        //        {
+        //            IsSucceed = false,
+        //            Message = errorString,
+        //        };
+
+
+        //    }
+        //    await _userManager.UpdateAsync(newUser);
+
+            //return new AuthServiceResponseDto()
+            //{
+            //    IsSucceed = true,
+            //    Message = "User Updated Successfully!"
+            //};
+
+        //}
     }
 }

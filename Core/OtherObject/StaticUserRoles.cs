@@ -2,8 +2,10 @@
 {
     public static class StaticUserRoles
     {
-        public const string OWNER = "OWNER";
-        public const string USER = "USER";
         public const string ADMIN = "ADMIN";
+        public const string HEADMAN = "HEADMAN";
+        public const string VITIM = "VITIM";
+        public const string USER = "USER";
+
     }
 }

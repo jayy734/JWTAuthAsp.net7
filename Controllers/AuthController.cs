@@ -2,6 +2,7 @@
 using JWTAuthAspNet7WebApi.Core.Entities;
 using JWTAuthAspNet7WebApi.Core.Interfaces;
 using JWTAuthAspNet7WebApi.Core.OtherObject;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,18 @@ namespace JWTAuthAspNet7WebApi.Controllers
             return BadRequest(loginResult);
         }
 
+        //[Authorize]
+        //[HttpPut]
+        //[Route("update")]
+        //[Authorize(Roles = StaticUserRoles.USER)]
+
+        //public async Task<IActionResult> Update([FromBody] RegisterDto updatedto)
+        //{
+        //    var updateResult = await _authService.UpdateAsync(updatedto);
+        //    if (updateResult.IsSucceed)
+        //        return Ok(updateResult);
+        //    return BadRequest(updateResult);
+        //}
         
 
         //Route -> make user -> admin
@@ -75,17 +88,27 @@ namespace JWTAuthAspNet7WebApi.Controllers
             return BadRequest(makeAdminResult);
         }
 
-        //Route -> make user -> owner
+        //Route -> make user -> headman
         [HttpPost]
-        [Route("make-owner")]
-        public async Task<IActionResult> MakeOwner([FromBody] UpdatePermissionDto updatePermissionDto)
+        [Route("make-headman")]
+        public async Task<IActionResult> MakeHeadman([FromBody] UpdatePermissionDto updatePermissionDto)
         {
-            var makeOwnerResult = await _authService.MakeOwnerAsync(updatePermissionDto);
+            var makeHeadmanResult = await _authService.MakeHeadmanAsync(updatePermissionDto);
 
-            if(makeOwnerResult.IsSucceed)
-                return Ok(makeOwnerResult);
+            if(makeHeadmanResult.IsSucceed)
+                return Ok(makeHeadmanResult);
 
-            return BadRequest(makeOwnerResult);
+            return BadRequest(makeHeadmanResult);
+        }
+
+        [HttpPost]
+        [Route("make-vitim")]
+        public async Task<IActionResult> MakeVitim([FromBody] UpdatePermissionDto updatePermissionDto)
+        {
+            var makeVitimResul = await _authService.MakeVitimAsync(updatePermissionDto);
+            if (makeVitimResul.IsSucceed)
+                return Ok(makeVitimResul);
+            return BadRequest(makeVitimResul) ;
         }
     }
 }
