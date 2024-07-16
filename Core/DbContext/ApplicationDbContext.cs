@@ -13,7 +13,7 @@ namespace JWTAuthAspNet7WebApi.Core.DbContext
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<IdentityUser<string>>(entity =>
+            builder.Entity<IdentityUser>(entity =>
             {
                 entity.ToTable("Users");
             });

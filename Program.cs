@@ -67,6 +67,7 @@ builder.Services
 // Inject app dependencies (DI)
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 // pipeline

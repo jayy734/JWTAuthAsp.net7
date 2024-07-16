@@ -9,6 +9,8 @@ namespace JWTAuthAspNet7WebApi.Core.Interfaces
         Task<AuthServiceResponseDto> LoginAsync(LoginDto loginDto);
         Task<AuthServiceResponseDto> MakeAdminAsync(UpdatePermissionDto updatePermissionDto);
         Task<AuthServiceResponseDto> MakeOwnerAsync(UpdatePermissionDto updatePermissionDto);
+
+        //Task<AuthServiceResponseDto> UpdateAsync(RegisterDto updateDto);
     }
 }
 

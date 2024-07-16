@@ -2,6 +2,7 @@
 using JWTAuthAspNet7WebApi.Core.Entities;
 using JWTAuthAspNet7WebApi.Core.Interfaces;
 using JWTAuthAspNet7WebApi.Core.OtherObject;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,18 @@ namespace JWTAuthAspNet7WebApi.Controllers
             return BadRequest(loginResult);
         }
 
+        //[Authorize]
+        //[HttpPut]
+        //[Route("update")]
+        //[Authorize(Roles = StaticUserRoles.USER)]
+
+        //public async Task<IActionResult> Update([FromBody] RegisterDto updatedto)
+        //{
+        //    var updateResult = await _authService.UpdateAsync(updatedto);
+        //    if (updateResult.IsSucceed)
+        //        return Ok(updateResult);
+        //    return BadRequest(updateResult);
+        //}
         
 
         //Route -> make user -> admin

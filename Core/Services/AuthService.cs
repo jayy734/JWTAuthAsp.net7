@@ -25,8 +25,8 @@ namespace JWTAuthAspNet7WebApi.Core.Services
         }
         public async Task<AuthServiceResponseDto> LoginAsync(LoginDto logindto)
         {
-            var user = await _userManager.FindByNameAsync(logindto.UserName);
-            if (user is null)
+            var user = await _userManager.FindByEmailAsync(logindto.Email);
+            if (user is null || user.isDeleted == true)
                 return new AuthServiceResponseDto()
                 {
                     IsSucceed = false,
@@ -46,6 +46,7 @@ namespace JWTAuthAspNet7WebApi.Core.Services
 
             var authClaims = new List<Claim>
             {
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim("JWTID", Guid.NewGuid().ToString()),
@@ -128,6 +129,7 @@ namespace JWTAuthAspNet7WebApi.Core.Services
                 LastName = registerDto.LastName,
                 Email = registerDto.Email,
                 UserName = registerDto.UserName,
+                PasswordHash = registerDto.Password,
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 
@@ -198,5 +200,55 @@ namespace JWTAuthAspNet7WebApi.Core.Services
 
             return token;
         }
+
+        //public async Task<AuthServiceResponseDto> UpdateAsync(RegisterDto registerDto)
+        //{
+
+        //    var isExitUser = await _userManager.FindByNameAsync(registerDto.UserName);
+
+        //    if (isExitUser == null)
+        //    {
+        //        return new AuthServiceResponseDto()
+        //        {
+        //            IsSucceed = false,
+        //            Message = "UserName Does not exist!"
+        //        };
+        //    }
+
+        //    ApplicationUser newUser = new ApplicationUser()
+        //    {
+        //        FirstName = registerDto.FirstName,
+        //        LastName = registerDto.LastName,
+        //        Email = registerDto.Email,
+        //        UserName = registerDto.UserName,               
+        //        SecurityStamp = Guid.NewGuid().ToString(),
+        //    };
+
+        //    var updateResult = await _userManager.UpdateAsync(newUser);
+
+        //    if (!updateResult.Succeeded)
+        //    {
+        //        var errorString = "User Creation Failed Because: ";
+        //        foreach (var error in updateResult.Errors)
+        //        {
+        //            errorString += " # " + error.Description;
+        //        }
+        //        return new AuthServiceResponseDto()
+        //        {
+        //            IsSucceed = false,
+        //            Message = errorString,
+        //        };
+
+
+        //    }
+        //    await _userManager.UpdateAsync(newUser);
+
+            //return new AuthServiceResponseDto()
+            //{
+            //    IsSucceed = true,
+            //    Message = "User Updated Successfully!"
+            //};
+
+        //}
     }
 }
