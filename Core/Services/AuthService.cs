@@ -26,7 +26,7 @@ namespace JWTAuthAspNet7WebApi.Core.Services
         public async Task<AuthServiceResponseDto> LoginAsync(LoginDto logindto)
         {
             var user = await _userManager.FindByEmailAsync(logindto.Email);
-            if (user is null)
+            if (user is null || user.isDeleted == true)
                 return new AuthServiceResponseDto()
                 {
                     IsSucceed = false,

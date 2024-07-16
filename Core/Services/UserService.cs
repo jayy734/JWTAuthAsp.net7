@@ -48,5 +48,39 @@ namespace JWTAuthAspNet7WebApi.Core.Services
                 Message = "User Updated Successfully!"
             };
         }
+
+        public async Task<AuthServiceResponseDto> DeleteUserAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return new AuthServiceResponseDto
+                {
+                    IsSucceed = false,
+                    Message = "User not found."
+                };
+            }
+
+            user.isDeleted = true;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded) 
+            {
+                var errorString = "User Deletion Failed Because: ";
+                foreach (var error in result.Errors)
+                {
+                    errorString += "#" + error.Description;
+                }
+                return new AuthServiceResponseDto
+                {
+                    IsSucceed = false,
+                    Message = errorString
+                };
+            }
+            return new AuthServiceResponseDto
+            {
+                IsSucceed = true,
+                Message = "User marked as deleted successfully."
+            };
+        }
     }
 }

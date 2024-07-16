@@ -6,5 +6,6 @@ namespace JWTAuthAspNet7WebApi.Core.Interfaces
     public interface IUserService
     {
         Task<AuthServiceResponseDto> UpdateUserAsync(RegisterDto updateDto);
+        Task<AuthServiceResponseDto> DeleteUserAsync(string email);
     }
 }

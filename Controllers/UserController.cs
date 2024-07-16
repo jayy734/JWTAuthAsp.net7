@@ -35,6 +35,19 @@ namespace JWTAuthAspNet7WebApi.Controllers
             }
             return BadRequest(updateResult);
         }
+
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteUser([FromBody] string email)
+        {
+            var result = await _userService.DeleteUserAsync(email);
+
+            if (result.IsSucceed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
     }
 
 }
